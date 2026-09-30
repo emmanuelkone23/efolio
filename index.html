@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio Monolithe</title>
+<meta name="description" content="Koné Emmanuel, développeur web Full-Stack basé à Abidjan : applications web en PHP, MySQL et JavaScript.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23131614'/%3E%3Crect x='8' y='8' width='7' height='7' rx='1.5' fill='%23f4f5f1'/%3E%3Crect x='17' y='8' width='7' height='7' rx='1.5' fill='%23f4f5f1'/%3E%3Crect x='8' y='17' width='7' height='7' rx='1.5' fill='%23f4f5f1'/%3E%3Crect x='17' y='17' width='7' height='7' rx='1.5' fill='%232437c4'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__top"><span data-bind="nom"></span><span data-bind="metier"></span></div>
+  <div class="loader__count"><span id="loaderCount">0</span><small>%</small></div>
+  <div class="loader__bar"><i id="loaderBar"></i></div>
+</div>
+
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<header class="nav" id="nav">
+  <nav class="nav__links" id="navLinks" aria-label="Sections">
+    <a href="#apropos">À propos</a>
+    <a href="#parcours">Parcours</a>
+    <a href="#competences">Compétences</a>
+    <a href="#realisations">Réalisations</a>
+    <a href="#documentation">Documentation</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="nav__right">
+    <button class="nav__icon" id="themeToggle" type="button" aria-label="Changer de thème"><span class="theme-glyph"></span></button>
+    <a class="btn btn--solid btn--sm nav__cta" href="#contact">Me contacter</a>
+    <button class="nav__icon nav__menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks">Menu</button>
+  </div>
+</header>
+
+<aside class="hud" aria-hidden="true">
+  <span><b id="hudSection">Accueil</b> <em id="hudShape">Sphère</em> · <span id="hudCount">512</span> modules</span>
+  <span>Défilement <b id="hudPct">000</b>%</span>
+</aside>
+
+<main>
+  <section id="accueil" class="hero" data-label="Accueil" data-shape="0" data-x="1">
+    <div class="wrap">
+      <p class="kicker"><span data-bind="disponibilite"></span></p>
+      <h1 class="hero__title">
+        <span class="line"><span data-bind="prenom"></span></span>
+        <span class="line line--offset"><span data-bind="nomFamille"></span></span>
+      </h1>
+      <div class="hero__meta">
+        <p class="hero__role" data-bind="metier"></p>
+        <p class="hero__pitch" data-bind="accroche"></p>
+      </div>
+      <div class="hero__actions">
+        <a class="btn btn--solid" href="#realisations">Voir mes réalisations <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hero__foot">
+        <span data-bind="localisation"></span>
+        <span class="scrollcue"><i></i>Faites défiler</span>
+        <span id="clock"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="apropos" class="section" data-label="À propos" data-shape="6" data-x="0.2" data-z="-1.5">
+    <div class="wrap about">
+      <figure class="about__portrait" data-reveal>
+        <div id="portrait" class="portrait"></div>
+        <figcaption><span data-bind="nom"></span><span data-bind="localisation"></span></figcaption>
+      </figure>
+      <div class="about__text">
+        <p class="kicker" data-reveal>À propos</p>
+        <h2 class="h2" id="aproposTitre" data-reveal></h2>
+        <div class="prose" id="aproposTexte" data-reveal></div>
+        <dl class="stats" id="stats" data-reveal></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="parcours" class="section" data-label="Parcours" data-shape="2" data-x="0" data-y="-1">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker" data-reveal>Parcours</p>
+        <h2 class="h2" data-reveal>Les étapes qui m'ont formé.</h2>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <section id="competences" class="section" data-label="Compétences" data-shape="3" data-x="1">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker" data-reveal>Compétences</p>
+        <h2 class="h2" data-reveal>Une boîte à outils complète, du serveur à l'écran.</h2>
+      </div>
+      <div class="skills" id="skills"></div>
+    </div>
+  </section>
+
+  <section id="realisations" class="hs" data-label="Réalisations" data-shape="4" data-x="0">
+    <div class="hs__pin">
+      <div class="hs__track" id="track">
+        <div class="hs__intro">
+          <p class="kicker">Réalisations</p>
+          <h2 class="h2">Des projets livrés, utilisés, maintenus.</h2>
+          <p class="muted">Cliquez sur un projet pour voir les photos, le contexte et les technologies.</p>
+          <p class="hs__hint" aria-hidden="true">Continuez à défiler <span>→</span></p>
+        </div>
+        <div class="hs__cards" id="cards"></div>
+        <a class="hs__outro" href="#contact">
+          <span class="kicker">Et le vôtre ?</span>
+          <span class="hs__outro-title">Parlons de votre prochain projet</span>
+          <span class="hs__outro-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div class="hs__bar" aria-hidden="true"><i id="hsBar"></i></div>
+    </div>
+  </section>
+
+  <section id="documentation" class="section" data-label="Documentation" data-shape="5" data-x="-1" data-y="0.9" data-z="-1">
+    <div class="wrap">
+      <div class="section-head section-head--right">
+        <p class="kicker" data-reveal>Documentation</p>
+        <h2 class="h2" data-reveal>Comment je travaille.</h2>
+      </div>
+      <div class="docs">
+        <div class="docs__col">
+          <h3 class="h3" data-reveal>Ma méthode</h3>
+          <ol class="steps" id="steps"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact" data-label="Contact" data-shape="0" data-x="1.4" data-z="-2.5">
+    <div class="wrap">
+      <p class="kicker" data-reveal>Contact</p>
+      <h2 class="contact__title" data-reveal>Parlons de votre projet.</h2>
+      <div class="contact__mail" data-reveal>
+        <a id="mailLink" href="#"><span id="mailText"></span></a>
+        <button class="btn btn--ghost btn--sm" id="copyMail" type="button">Copier l'adresse</button>
+      </div>
+      <dl class="contact__grid" data-reveal>
+        <div><dt>Téléphone</dt><dd id="phone"></dd></div>
+        <div><dt>Basé à</dt><dd data-bind="localisation"></dd></div>
+        <div><dt>Réseaux</dt><dd id="socials"></dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span>© <span id="year"></span> <span data-bind="nom"></span></span>
+    <span>Conçu et développé à la main</span>
+    <a href="#accueil">Retour en haut ↑</a>
+  </div>
+</footer>
+
+<dialog class="modal" id="modal" aria-labelledby="modalTitle">
+  <div class="modal__head">
+    <p class="kicker" id="modalKicker"></p>
+    <button class="nav__icon" id="modalClose" type="button" aria-label="Fermer">Fermer ✕</button>
+  </div>
+  <div class="modal__body">
+    <div class="modal__gallery" id="modalGallery"></div>
+    <div class="modal__info">
+      <h2 class="h2" id="modalTitle"></h2>
+      <p class="modal__role" id="modalRole"></p>
+      <div class="prose" id="modalDesc"></div>
+      <ul class="tags" id="modalStack"></ul>
+      <a class="btn btn--solid" id="modalLink" href="#" target="_blank" rel="noopener">Voir le projet en ligne <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</dialog>
+
+<script src="data.js"></script>
+<script src="content.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="scene.js"></script>
+</body>
+</html>
